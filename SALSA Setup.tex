@@ -142,4 +142,29 @@ java -cp salsa1.1.2_version2.jar:. salsac.SalsaCompiler demo/*.salsa
 javac -cp salsa1.1.2_version2.jar:. demo/*.java
 java -cp salsa1.1.2_version2.jar:. demo.HelloWorld
 \end{lstlisting}
+
+\section{Common Errors}
+\subsection{Could not find the main class}
+You'll see an exception like:
+\begin{lstlisting}
+Exception in thread "main" java.lang.NoClassDefFoundError: demo/HelloWorld
+Caused by: java.lang.ClassNotFoundException: demo.HelloWorld
+	at ...
+	at ...
+	...
+Could not find the main class: HelloWorld.  Program will exit.
+\end{lstlisting}
+
+Java couldn't find the class you supplied on the command line,
+\texttt{demo.HelloWorld} here. If your class is HelloWorld, and it's in module
+demo in the SALSA code, you must run java from the parent directory, supplying
+\texttt{demo.HelloWorld} as an arguement, and there must be a
+\texttt{HelloWorld.class} file in a subfolder named \texttt{demo}.
+
+This error is as simple as Java saying, "404, not found." If you said:
+
+\texttt{java -cp ... demo.HelloWorld}
+
+It is going to look for \texttt{demo/HelloWorld.class}. If it can't find it,
+you get this exception.
 \end{document}
