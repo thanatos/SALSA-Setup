@@ -1,0 +1,15 @@
+module demo;
+
+/*
+	This behavior simply sends two print(...) messages to the
+	standardOutput actor.
+*/
+
+behavior HelloWorld
+{
+	void act(String[] argv)
+	{
+		standardOutput<-print("Hello") @
+		standardOutput<-print("World!");
+	}
+}

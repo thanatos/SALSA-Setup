@@ -1,0 +1,145 @@
+\documentclass{article}
+\usepackage[
+	pdftex,
+	colorlinks=true,urlcolor=blue,
+	pdfauthor={Roy Wellington},
+	pdftitle={SALSA Setup Guide},
+	pdfsubject=SALSA,
+	pdfkeywords=SALSA
+]{hyperref}
+\usepackage{listings}
+\usepackage{anysize}
+\newcommand{\bslash}{\textbackslash}
+\newcommand{\envPATH}{\texttt{PATH}}
+\newcommand{\envCLASSPATH}{\texttt{CLASSPATH}}
+
+\title{SALSA Setup Guide}
+\begin{document}
+\marginsize{1 in}{1 in}{1 in}{1 in}
+
+\section{Settings up JRE \& the JDK}
+JRE is the Java Runtime Environment, which you need to run Java applications,
+and the JDK, which you need to compile Java applications. For SALSA, you will
+need both.
+
+\subsection{Linux}
+Get both Java and the JDK through your distribution. Your package manager
+(ie, apt-get/Synaptic for Ubuntu/Debian) should have a package for it.
+
+\subsection{Windows}
+You probably already have the JRE. If you do, it will be located under
+\texttt{C:\bslash Program Files\bslash Java\bslash jre*}. If there are
+multiple folders, you probably have multiple versions installed. Choose
+the highest version. If you see a folder named \texttt{jre6}, it is not
+version 6. To manually see the version of a version of Java, do the
+following in a command prompt:
+\begin{lstlisting}
+C:
+cd \"Program Files"\Java\(your Java version's folder)\bin
+.\java.exe -version
+\end{lstlisting}
+
+If you don't have it, go to \url{http://java.sun.com/javase/downloads/}, and grab "Java SE Runtime Environment" (SE stands for "Standard Edition") and install it.
+
+Once you have the JRE, get the JDK too. Much the same procedure.
+
+\subsubsection{Add Java to your Path}
+Add Java to your \envPATH. You need both \texttt{java} and \texttt{javac}
+in your \envPATH. To see if they're in your path, just open a command
+prompt and type \texttt{java} or \texttt{javac}. If the command works, that
+command is in your path. If it tells you it can't find the command, then you
+need to add the folder containing either \texttt{java.exe} or
+\texttt{javac.exe} to your \envPATH.
+
+In Vista and 7, you can edit the environment variables by right clicking on
+My Computer, hitting Properties, clicking "Advanced system settings" on the left
+side. On the window that appears, click "Environment Variables"
+
+TODO: finish this
+
+\subsection{Mac OS X}
+You should already have Java. You can confirm this by opening a terminal and
+typing \texttt{java -version} and \texttt{javac -version}
+
+\section{A Note on CLASSPATH}
+\envCLASSPATH is an environment variable that controls where Java looks for
+classes. It is a list of directories, and, like the \envPATH variable, is
+separated by either a \texttt{:} --- if you use a *nix machine, such as
+Linux --- or a \texttt{;} --- if you use a Windows machine.
+At the very least, yours should include \texttt{.} (the current directory).
+If it does not, you \textbf{must} manually append it to any commands using
+the \texttt{-cp} argument. This is covered below.
+
+\section{Getting SALSA}
+Download SALSA. You can get it from \url{http://wcl.cs.rpi.edu/salsa/}.
+
+\section{Compiling SALSA Code}
+SALSA code is compiled to Java code, which is then compiled to a Java class
+file. The SALSA compiler, like any compiler, is just a program. The SALSA
+compiler is a Java program, so we must execute it using Java.
+
+To run the compiler on *nix:
+
+\texttt{java -cp \textit{location-of-salsa-jar}:. salsac.SalsaCompiler
+\textit{file-to-compile}}
+
+To run the compiler on Windows:
+
+\texttt{java -cp \textit{location-of-salsa-jar};. salsac.SalsaCompiler
+\textit{file-to-compile}}
+
+Replace the italicized parts with the appropriate things. Note the
+\texttt{-cp} -- this is short for class-path. These locations, in addition to
+the \envCLASSPATH variable, are searched for classes. Since we don't want to
+keep the SALSA \texttt{.jar} file in the \envCLASSPATH, we put it in the
+\texttt{-cp}. Note that this works like the environment variable: Use
+semicolons if you're on Windows.
+
+\section{Compiling Java / SALSA Compiler Output}
+The SALSA compiler will compile the SALSA code into Java. If this seems
+strange, consider this: gcc/g++ compiles C/C++ code into assembler, before
+feeding that to an assembler for translation to machine code. SALSA does
+something very similar: it does SALSA $ \to $ Java $ \to $ Java bytecode.
+
+To compile the SALSA compiler's Java output, compile it as you would any
+normal java code:
+
+\texttt{javac -cp \textit{location-of-salsa-jar}:. \textit{java-code-file}}
+
+\section{Running the SALSA Program}
+Once you've got the Java compiled, you're at your last step: running the
+program. Since it's really just compiled Java, we use Java to run it.
+
+One thing to note: Java is picky about modules. If your SALSA file starts
+with:
+
+\texttt{module foobar;}
+
+...then it must be in a folder named "foobar". So, if your file was named
+\texttt{Baz.salsa}, then you would run:
+
+\texttt{java -cp \textit{location-of-salsa-jar}:. foorbar.Baz}
+
+...from the \textit{parent directory} of foobar.
+
+\section{Example}
+This is our sample file:
+\lstinputlisting[caption=HelloWorld.salsa,frame=tb]{HelloWorld.salsa}
+
+Assume we have a folder \texttt{$\sim$/proglang/salsa} (yours can differ,
+substitute appropriately). Inside that folder, create a \texttt{demo} folder,
+and put \texttt{HelloWorld.salsa} inside that folder. Then, download the SALSA
+jar file (it has a name that is along the lines of
+\texttt{salsaX.X.X\_versionX.jar}), and put it inside the
+\texttt{$\sim$/proglang/salsa} folder.
+
+Open a terminal/command prompt to our \texttt{$\sim$/proglang/salsa} folder.
+Do the following to compile (remember, if you're on Windows, replace
+\texttt{:} with \texttt{;} in the \texttt{-cp} argument.):
+
+\begin{lstlisting}
+java -cp salsa1.1.2_version2.jar:. salsac.SalsaCompiler demo/*.salsa
+javac -cp salsa1.1.2_version2.jar:. demo/*.java
+java -cp salsa1.1.2_version2.jar:. demo.HelloWorld
+\end{lstlisting}
+\end{document}
